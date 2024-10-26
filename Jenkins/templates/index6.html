@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reinício</title>
+    <style>
+        :root {
+            --primary-bg-color: #1f1f1f;
+            --secondary-bg-color: #2c2c2c;
+            --primary-text-color: #ffffff;
+            --secondary-text-color: #b0b0b0;
+            --input-bg-color: #3c3c3c;
+            --input-border-color: #555;
+            --input-focus-border-color: #008cba;
+            --button-bg-color: #008cba;
+            --button-hover-bg-color: #007299;
+            --button-text-color: #ffffff;
+            --border-radius: 6px;
+            --box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-bg-color);
+            overflow: hidden;
+        }
+
+        .navbar {
+            background-color: var(--secondary-bg-color);
+            height: 80px;
+            width: 100%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 1rem;
+        }
+
+        .navbar img {
+            height: 60px;
+            max-width: 100%;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-bg-color);
+            color: var(--primary-text-color);
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            height: calc(100vh - 80px);
+            top: 80px;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar a {
+            color: var(--primary-text-color);
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            display: block;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: var(--button-hover-bg-color);
+        }
+
+        .sidebar a.selected {
+            background-color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            margin-top: 80px;
+            padding: 1rem;
+            width: calc(100% - 250px);
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--secondary-bg-color);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 600px;
+            margin: 2rem auto;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            color: var(--primary-text-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 1rem;
+            color: var(--secondary-text-color);
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select {
+            padding: 0.75rem;
+            background-color: var(--input-bg-color);
+            border: 1px solid var(--input-border-color);
+            border-radius: var(--border-radius);
+            color: var(--primary-text-color);
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            border-color: var(--input-focus-border-color);
+        }
+
+        select option {
+            background-color: var(--secondary-bg-color);
+            color: var(--primary-text-color);
+        }
+
+        button {
+            padding: 0.75rem;
+            background-color: var(--button-bg-color);
+            border: none;
+            border-radius: var(--border-radius);
+            color: var(--button-text-color);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: var(--box-shadow);
+        }
+
+        button:hover {
+            background-color: var(--button-hover-bg-color);
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #selectedClusters {
+            background-color: var(--secondary-bg-color);
+            color: var(--primary-text-color);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-top: 1rem;
+            max-height: 150px; /* Limita a altura */
+            overflow-y: auto; /* Rolagem automática se exceder a altura */
+        }
+    </style>
+    <style>
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+    
+        .dropbtn {
+            background-color: var(--secondary-bg-color);
+            color: var(--primary-text-color);
+            padding: 10px 15px;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            width: 100%;
+        }
+    
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--secondary-bg-color);
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+    
+        .dropdown-content a {
+            color: var(--primary-text-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+    
+        .dropdown-content a:hover {
+            background-color: #008cba;
+        }
+    
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+    
+        .dropdown:hover .dropbtn {
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <img src="/static/sicoob-novo-logo-612F40FA2F-seeklogo.com.png" alt="Logo do Sistema">
+    </div>
+    <div class="sidebar">
+        <div class="dropdown">
+            <button class="dropbtn selected">RELATÓRIOS DE RESTART BUILDS</button>
+            <div class="dropdown-content">
+                <a href="/pesquisa">Restart Builds Whebsphere</a>
+                <a href="/pesquisa2">Restart Builds Liberty</a>
+                <a href="/pesquisa3">Restart Builds STRB</a>
+            </div>
+        </div>
+        <a href="/" >RESTART CTRP, TRNP E WASP</a>
+        <a href="/Isolar">BALANCEADOR ISOLAR-NO (MODO:PARALELO)</a>
+        <a href="/habilitar">BALANCEADOR HABILITAR (MODO:PARALELO)</a>
+        <a href="/IsolarERestartEnable">AÇÃO DE 1° NIVEL (MODO:PARALELO)</a>
+        <a href="/IsolarERestartEnable_SEGUENCIAL">AÇÃO DE 1° NIVEL (MODO:SEQUENCIAL)</a>
+        <a href="/Pesquisa_CCS" class="selected">PESQUISA NO POOL</a>
+
+        <div class="dropdown" >
+            <button class="dropbtn" >Automação SSH</button>
+            <div class="dropdown-content">
+                <a href="/ssh_disco_opt" >Disco-opt (limpa a pasta temp)</a>
+                <a href="/move_files" >Outofmemory (Mover arquivos .trc .txt .dmp .phd para pasta dump)</a>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="container">
+            <form id="restartForm" method="post" action="/repostar"> <!-- Alterado para /repostar -->
+                <div class="form-group">
+                    <label for="username">Usuário:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <h2>Selecione os Clusters</h2>
+                <div class="form-group">
+                    <label for="search">Pesquisar Clusters:</label>
+                    <input type="text" id="search" placeholder="Digite o nome do cluster...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="clusters">Clusters:</label>
+                    <select id="clusters" name="clusters" multiple required>
+                        {% for cluster in nomes_clusters %}
+                            <option value="{{ cluster }}">{{ cluster }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            
+                <!-- Campo oculto para enviar os clusters selecionados -->
+                <input type="hidden" id="selectedClustersInput" name="selectedClusters">
+            
+                <button type="submit">Verificar</button>
+            </form>
+            
+            <div id="selectedClusters">
+                <h3>Clusters Selecionados:</h3>
+                <div id="selectedItems">Nenhum cluster selecionado.</div>
+            </div>
+            
+            {% if processing_message %}
+                <div id="processingMessage">{{ processing_message }}</div>
+            {% endif %}
+            
+            {% if result_message %}
+                <div id="resultMessage">{{ result_message }}</div>
+            {% endif %}
+            
+            <div id="logContainer">
+                
+                <div id="logMessages">
+                    {% for log in log_messages %}
+                        <p>{{ log }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const updateSelectedClusters = () => {
+            const selectElement = document.getElementById("clusters");
+            const selectedItemsContainer = document.getElementById("selectedItems");
+            const selectedClustersInput = document.getElementById("selectedClustersInput");
+            const selectedOptions = Array.from(selectElement.selectedOptions).map(option => option.value);
+            
+            // Atualiza a visualização
+            if (selectedOptions.length > 0) {
+                selectedItemsContainer.innerHTML = selectedOptions.join(", ");
+            } else {
+                selectedItemsContainer.innerHTML = "Nenhum cluster selecionado.";
+            }
+            
+            // Armazena os clusters selecionados no campo oculto
+            selectedClustersInput.value = selectedOptions.join(",");
+        };
+    
+        // Adiciona o evento de mudança ao elemento select
+        document.getElementById("clusters").addEventListener("change", updateSelectedClusters);
+        
+        // Filtro de pesquisa para clusters
+        document.getElementById("search").addEventListener("input", function () {
+            const searchTerm = this.value.toLowerCase();
+            const options = document.querySelectorAll("#clusters option");
+            options.forEach(option => {
+                const isVisible = option.textContent.toLowerCase().includes(searchTerm);
+                option.style.display = isVisible ? "block" : "none";
+            });
+        });
+    
+        // Prevenir o envio duplicado do formulário
+        document.getElementById("restartForm").addEventListener("submit", function(event) {
+            const submitButton = event.target.querySelector('button[type="submit"]');
+            submitButton.disabled = true; // Desativa o botão
+        });
+    </script>
+    
+    
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Builds do Job</title>
+    <style>
+        :root {
+            --primary-bg-color: #1f1f1f;
+            --secondary-bg-color: #2c2c2c;
+            --primary-text-color: #ffffff;
+            --secondary-text-color: #b0b0b0;
+            --border-radius: 6px;
+            --box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-bg-color);
+            overflow: hidden;
+        }
+
+        .navbar {
+            background-color: var(--secondary-bg-color);
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar img {
+            height: 60px;
+            max-width: 100%;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-bg-color);
+            color: var(--primary-text-color);
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            height: calc(100vh - 80px);
+            top: 80px;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar a {
+            color: var(--primary-text-color);
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            display: block;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #008cba;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            margin-top: 80px;
+            padding: 1rem;
+            width: calc(100% - 250px);
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--secondary-bg-color);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin: 2rem auto;
+            width: 600px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            color: var(--primary-text-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid #555;
+            border-radius: var(--border-radius);
+            background-color: #333;
+        }
+
+        p {
+            margin: 0.5rem 0;
+        }
+
+        a {
+            color: var(--primary-text-color);
+            text-decoration: none;
+        }
+
+        .status-success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-failure {
+            color: red;
+            font-weight: bold;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            margin: 1rem 0;
+        }
+    </style>
+        <style>
+            .dropdown {
+                position: relative;
+                display: inline-block;
+            }
+        
+            .dropbtn {
+                background-color: var(--secondary-bg-color);
+                color: var(--primary-text-color);
+                padding: 10px 15px;
+                border: none;
+                text-align: left;
+                cursor: pointer;
+                width: 100%;
+            }
+        
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                background-color: var(--secondary-bg-color);
+                min-width: 160px;
+                box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                z-index: 1;
+            }
+        
+            .dropdown-content a {
+                color: var(--primary-text-color);
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+            }
+        
+            .dropdown-content a:hover {
+                background-color: #008cba;
+            }
+        
+            .dropdown:hover .dropdown-content {
+                display: block;
+            }
+        
+            .dropdown:hover .dropbtn {
+                background-color: #4CAF50;
+            }
+        </style>
+    <script>
+        // Função para atualizar a página a cada 10 segundos
+        function autoRefresh() {
+            setTimeout(function() {
+                window.location.reload();
+            }, 10000); // 10 segundos
+        }
+        window.onload = autoRefresh;
+    </script>
+</head>
+<body>
+
+    <div class="navbar">
+        <img src="/static/sicoob-novo-logo-612F40FA2F-seeklogo.com.png" alt="Logo do Sistema">
+    </div>
+
+    <div class="sidebar">
+        <div class="dropdown">
+            <button class="dropbtn" class="selected">RELATÓRIOS DE RESTART BUILDS</button>
+            <div class="dropdown-content">
+                <a href="/pesquisa" >Restart Builds Whebsphere</a>
+                <a href="/pesquisa2">Restart Builds Liberty</a>
+                <a href="/pesquisa3">Restart Builds STRB</a>
+            </div>
+        </div>
+        <a href="/" class="selected">RESTART CTRP, TRNP E WASP</a>
+        <!-- <a href="/restart">RESTART CLUSTER</a>
+        <a href="/restart2">RESTART SERVIÇO</a> -->
+        <a href="/Isolar">BALANCEADOR ISOLAR-NO (MODO:PARALELO)</a>
+        <a href="/habilitar">BALANCEADOR HABILITAR (MODO:PARALELO)</a>
+        <a href="/IsolarERestartEnable">AÇÃO DE 1° NIVEL (MODO:PARALELO)</a>
+        <a href="/IsolarERestartEnable_SEGUENCIAL">AÇÃO DE 1° NIVEL (MODO:SEQUENCIAL)</a>
+        <a href="/Pesquisa_CCS">PESQUISA NO POOL</a>
+
+        <div class="dropdown" >
+            <button class="dropbtn" >Automação SSH</button>
+            <div class="dropdown-content">
+                <a href="/ssh_disco_opt" >Disco-opt (limpa a pasta temp)</a>
+                <a href="/move_files">Outofmemory (Mover arquivos .trc .txt .dmp .phd para pasta dump)</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <h2>Builds do Job: Restart/job/SRTB/job/restart-srtb/</h2>
+
+            {% if error_message %}
+                <p class="error">{{ error_message }}</p>
+            {% elif builds %}
+                <ul>
+                    {% for build in builds %}
+                        <li>
+                            <p><strong>Build Number:</strong> {{ build.number }}</p>
+                            <p><strong>URL do Build:</strong> <a href="{{ build.url }}">{{ build.url }}</a></p>
+                            <p><strong>Status:</strong> <span class="{% if build.result == 'SUCCESS' %}status-success{% elif build.result == 'FAILURE' %}status-failure{% endif %}">{{ build.result }}</span></p>
+                            <p><strong>Data/Hora de Execução:</strong> {{ build.timestamp }}</p>
+                            <p><strong>Duração (ms):</strong> {{ build.duration }}</p>
+                            <p><strong>Usuário que Iniciou:</strong> {{ build.user }}</p>
+                            <p><strong>Ação:</strong> {{ build.acao }}</p>
+                            <p><strong>Modo:</strong> {{ build.modo }}</p>
+                            <p><strong>Cluster:</strong> {{ build.cluster }}</p>
+                            <p><strong>Ambiente:</strong> {{ build.ambiente }}</p>
+                            <p><strong>Selecionados:</strong> {{ build.selecionados }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Nenhum build encontrado ou erro ao acessar Jenkins.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

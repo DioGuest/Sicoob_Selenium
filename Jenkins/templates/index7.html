@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reinício</title>
+    <style>
+        :root {
+            --primary-bg-color: #1f1f1f;
+            --secondary-bg-color: #2c2c2c;
+            --primary-text-color: #ffffff;
+            --secondary-text-color: #b0b0b0;
+            --input-bg-color: #3c3c3c;
+            --input-border-color: #555;
+            --input-focus-border-color: #008cba;
+            --button-bg-color: #008cba;
+            --button-hover-bg-color: #007299;
+            --button-text-color: #ffffff;
+            --border-radius: 6px;
+            --box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            --sidebar-width: 250px;
+            --progress-bar-width: 100%;
+            --navbar-height: 80px;
+            --form-width: 600px;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-bg-color);
+            overflow: hidden;
+        }
+
+        .navbar {
+            background-color: var(--secondary-bg-color);
+            height: var(--navbar-height);
+            width: 100%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 1rem;
+        }
+
+        .navbar img {
+            height: 60px;
+            max-width: 100%;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--secondary-bg-color);
+            color: var(--primary-text-color);
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            height: calc(100vh - var(--navbar-height));
+            top: var(--navbar-height);
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar a {
+            color: var(--primary-text-color);
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            display: block;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: var(--button-hover-bg-color);
+        }
+
+        .sidebar a.selected {
+            background-color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--navbar-height);
+            padding: 1rem;
+            width: calc(100% - var(--sidebar-width));
+            height: calc(100vh - var(--navbar-height));
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--secondary-bg-color);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: var(--form-width);
+            margin: 2rem auto;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            color: var(--primary-text-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 1rem;
+            color: var(--secondary-text-color);
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            padding: 0.75rem;
+            background-color: var(--input-bg-color);
+            border: 1px solid var(--input-border-color);
+            border-radius: var(--border-radius);
+            color: var(--primary-text-color);
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--input-focus-border-color);
+        }
+
+        button {
+            padding: 0.75rem;
+            background-color: var(--button-bg-color);
+            border: none;
+            border-radius: var(--border-radius);
+            color: var(--button-text-color);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: var(--box-shadow);
+        }
+
+        button:hover {
+            background-color: var(--button-hover-bg-color);
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #progressContainer {
+            display: none; /* Começa invisível */
+            width: var(--progress-bar-width);
+            margin: 1rem auto;
+            text-align: center;
+        }
+
+        #progressBar {
+            width: 0%;
+            height: 8px;
+            background-color: #4caf50;
+            border-radius: var(--border-radius);
+            transition: width 0.3s ease;
+        }
+
+        #resultMessageContainer {
+            background-color: var(--secondary-bg-color);
+            color: var(--primary-text-color);
+            padding: 10px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-top: 20px;
+            max-height: 300px;
+            overflow: auto;
+            display: none;
+        }
+
+        #resultMessage {
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: translateY(-20px);
+        }
+
+        #resultMessage.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #processingMessage {
+            display: none;
+            color: var(--primary-text-color);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 200px;
+            }
+
+            .navbar img {
+                height: 50px;
+            }
+
+            .container {
+                padding: 1rem;
+                margin: 1rem auto;
+                width: calc(100% - 2rem);
+            }
+
+            h2 {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 150px;
+            }
+
+            .main-content {
+                margin-left: 150px;
+            }
+
+            .navbar img {
+                height: 40px;
+            }
+
+            .container {
+                padding: 0.5rem;
+                margin: 0.5rem auto;
+                width: calc(100% - 1rem);
+            }
+
+            h2 {
+                font-size: 1rem;
+            }
+        }
+    </style>
+      <style>
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+    
+        .dropbtn {
+            background-color: var(--secondary-bg-color);
+            color: var(--primary-text-color);
+            padding: 10px 15px;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            width: 100%;
+        }
+    
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--secondary-bg-color);
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+    
+        .dropdown-content a {
+            color: var(--primary-text-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+    
+        .dropdown-content a:hover {
+            background-color: #008cba;
+        }
+    
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+    
+        .dropdown:hover .dropbtn {
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <img src="{{ url_for('static', filename='sicoob-novo-logo-612F40FA2F-seeklogo.com.png') }}" alt="Logo do Sistema">
+    </div>
+
+    <div class="sidebar">
+        <div class="dropdown">
+            <button class="dropbtn" >RELATÓRIOS DE RESTART BUILDS</button>
+            <div class="dropdown-content">
+                <a href="/pesquisa" >Restart Builds Whebsphere</a>
+                <a href="/pesquisa2">Restart Builds Liberty</a>
+                <a href="/pesquisa3">Restart Builds STRB</a>
+            </div>
+        </div>
+        <a href="/">RESTART CTRP, TRNP E WASP</a>
+        <!-- <a href="/restart">RESTART CLUSTER</a>
+        <a href="/restart2">RESTART SERVIÇO</a> -->
+        <a href="/Isolar">BALANCEADOR ISOLAR-NO (MODO:PARALELO)</a>
+        <a href="/habilitar" class="selected">BALANCEADOR HABILITAR (MODO:PARALELO)</a>
+        <a href="/IsolarERestartEnable">AÇÃO DE 1° NIVEL (MODO:PARALELO)</a>
+        <a href="/IsolarERestartEnable_SEGUENCIAL">AÇÃO DE 1° NIVEL (MODO:SEQUENCIAL)</a>
+        <a href="/Pesquisa_CCS">PESQUISA NO POOL</a>
+
+        <div class="dropdown" class="selected">
+            <button class="dropbtn" class="selected">Automação SSH</button>
+            <div class="dropdown-content">
+                <a href="/ssh_disco_opt" >Disco-opt (limpa a pasta temp)</a>
+                <a href="/outofmemory">Outofmemory (Mover arquivos .trc .txt .dmp .phd para pasta dump)</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <h2>Processo de HABILITAR maquina no node (MODO:PARALELO)</h2>
+            
+            <form id="restartForm">
+                <div class="form-group">
+                    <label for="Name">Login Balanceador:</label>
+                    <input type="text" id="Name" name="Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="PassWord">Senha Balanceador:</label>
+                    <input type="password" id="PassWord" name="PassWord" required>
+                </div>
+                <div class="form-group">
+                    <label for="Numero">Número da Máquina:</label>
+                    <input type="text" id="Numero" name="Numero" required>
+                </div>
+                <button type="submit">Habilitar</button>
+                <!-- Barra de progresso centralizada abaixo do botão -->
+                <div id="progressContainer">
+                    <div id="progressBar"></div>
+                </div>
+            </form>
+            <div id="processingMessage">Processando...</div>
+            <div id="resultMessageContainer">
+                <div id="resultMessage"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('restartForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var formData = new FormData(this);
+            var processingMessage = document.getElementById('processingMessage');
+            var resultMessageContainer = document.getElementById('resultMessageContainer');
+            var resultMessage = document.getElementById('resultMessage');
+            var progressContainer = document.getElementById('progressContainer');
+            var progressBar = document.getElementById('progressBar');
+
+            // Exibe a mensagem de processamento e a barra de progresso
+            processingMessage.style.display = 'block';
+            progressContainer.style.display = 'block'; // Garante que o contêiner esteja visível
+            progressBar.style.width = '0%';
+
+            // Simula o progresso da barra
+            var width = 0;
+            var interval = setInterval(function() {
+                if (width >= 100) {
+                    clearInterval(interval);
+                } else {
+                    width++;
+                    progressBar.style.width = width + '%';
+                }
+            }, 50); // Intervalo ajustado para uma animação suave
+
+            fetch("{{ url_for('Habilitar.submitIsolar') }}", {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                clearInterval(interval);
+                processingMessage.style.display = 'none';
+                progressContainer.style.display = 'none'; // Esconde o contêiner ao final
+                resultMessage.innerHTML = data;
+                
+                // Exibe a mensagem de resultado com efeito de deslizamento
+                resultMessageContainer.style.display = 'block';
+                resultMessage.classList.add('show');
+            })
+            .catch(error => {
+                clearInterval(interval);
+                processingMessage.style.display = 'none';
+                progressContainer.style.display = 'none'; // Esconde o contêiner ao final
+                resultMessage.innerHTML = 'Ocorreu um erro: ' + error;
+                
+                // Exibe a mensagem de resultado com efeito de deslizamento
+                resultMessageContainer.style.display = 'block';
+                resultMessage.classList.add('show');
+            });
+        });
+    </script>
+</body>
+</html>
