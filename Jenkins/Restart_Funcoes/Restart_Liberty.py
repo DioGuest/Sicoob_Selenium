@@ -31,3 +31,4 @@ def restart_liberty(Modo, valor_cluster, valor_codigo, Login, Senha):
             return f"Erro ao iniciar o build para o código {valor_codigo}: {response.status_code}<br>"
     except Exception as e:
         return f"Ocorreu um erro ao iniciar o build para o código {valor_codigo}: {e}<br>"
+
