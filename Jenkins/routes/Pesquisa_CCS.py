@@ -146,7 +146,7 @@ def submit():
 def acessar_pool_members(host, login, senha, url):
     service = Service(executable_path=caminho_do_driver)
     navegador = webdriver.Chrome(service=service)
-
+    host = host.upper()
     try:
         navegador.get(url)
 
@@ -196,6 +196,7 @@ def acessar_pool_members(host, login, senha, url):
         tabela = WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, "//tbody[@id='list_body']")))
 
         linhas = tabela.find_elements(By.TAG_NAME, "tr")
+        print(linhas)
         result_message = f"Resultados para {url}:<br>"  # Adiciona o link pesquisado
 
         for linha in linhas:

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Builds do Job</title>
+    <style>
+        :root {
+            --primary-bg-color: #f0f0f0;
+            --secondary-bg-color: #e1e1e1;
+            --primary-text-color: #333333;
+            --secondary-text-color: #555555;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-bg-color);
+            overflow: hidden;
+        }
+
+        .navbar {
+            background-color: var(--secondary-bg-color);
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar img {
+            height: 60px;
+            max-width: 100%;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-bg-color);
+            color: var(--primary-text-color);
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            height: calc(100vh - 80px);
+            top: 80px;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar a {
+            color: var(--primary-text-color);
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            display: block;
+            margin-bottom: 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #008cba;
+            color: #ffffff;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            margin-top: 80px;
+            padding: 1rem;
+            width: calc(100% - 250px);
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--secondary-bg-color);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin: 2rem auto;
+            width: 600px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary-text-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid #999;
+            border-radius: var(--border-radius);
+            background-color: #ffffff;
+            box-shadow: var(--box-shadow);
+        }
+
+        p {
+            margin: 0.5rem 0;
+        }
+
+        a {
+            color: var(--primary-text-color);
+            text-decoration: none;
+        }
+
+        .status-success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-failure {
+            color: red;
+            font-weight: bold;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            background-color: var(--secondary-bg-color);
+            color: var(--primary-text-color);
+            padding: 10px 15px;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--secondary-bg-color);
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: var(--primary-text-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #008cba;
+            color: #ffffff;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #4CAF50;
+        }
+
+        .relatorio-content {
+            padding: 1rem;
+            border: 1px solid #999;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+            margin-top: 0.5rem;
+            box-shadow: var(--box-shadow);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <img src="/static/sicoob-novo-logo-612F40FA2F-seeklogo.com.png" alt="Logo do Sistema">
+    </div>
+
+    <div class="sidebar">
+        <div class="dropdown">
+            <button class="dropbtn">RELATÓRIOS DE RESTART BUILDS</button>
+            <div class="dropdown-content">
+                <a href="/pesquisa">Restart Builds Websphere</a>
+                <a href="/pesquisa2">Restart Builds Liberty</a>
+                <a href="/pesquisa3">Restart Builds STRB</a>
+            </div>
+        </div>
+        <a href="/" class="selected">RESTART CTRP, TRNP E WASP</a>
+        <a href="/Isolar">BALANCEADOR ISOLAR-NO (MODO:PARALELO)</a>
+        <a href="/habilitar">BALANCEADOR HABILITAR (MODO:PARALELO)</a>
+        <a href="/IsolarERestartEnable">AÇÃO DE 1° NIVEL (MODO:PARALELO)</a>
+        <a href="/IsolarERestartEnable_SEGUENCIAL">AÇÃO DE 1° NIVEL (MODO:SEQUENCIAL)</a>
+        <a href="/Pesquisa_CCS">PESQUISA NO POOL</a>
+
+        <div class="dropdown" class="selected">
+            <button class="dropbtn" >Automação SSH</button>
+            <div class="dropdown-content">
+                <a href="/ssh_disco_opt" >Disco-opt (limpa a pasta temp)</a>
+                <a href="/move_files">Outofmemory (Mover arquivos .trc .txt .dmp .phd para pasta dump)</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <h1>Resultados da Pesquisa</h1>
+            {% if resultados %}
+                <div>
+                    {% for key, value in resultados.items() %}
+                        <h3>{{ key }}</h3>
+                        <div>{{ value|safe|replace('<br>', '</p><p>') }}</div> <!-- Substitui <br> por <p> para melhor formatação -->
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Nenhum resultado encontrado.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+</body>
+</html>

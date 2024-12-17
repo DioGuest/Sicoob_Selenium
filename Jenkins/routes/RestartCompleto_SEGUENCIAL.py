@@ -111,7 +111,7 @@ def processar_isolamento(numero, login, senha):
                 logger.error(f"Erro ao processar {nome_processo} para o número {numero}: {e}")
 
     result_message += "Processo de isolamento concluído para este número.<br>"
-    time.sleep(180)  # Mantém o delay após todos os processos de isolamento
+    time.sleep(240)  # Mantém o delay após todos os processos de isolamento
     return result_message
 
 def processar_reinicializacao(numero, Modo, NameJenkins, PassWordJenkins):
